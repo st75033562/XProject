@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ToListProtobuf : BaseProtobuf {
     public override void SaveDataFile(string saveFilePath, string fileName, List<string[]> datas) {
-        Assembly assembly = Assembly.Load("Common");  //脚本所在程序集
+        Assembly assembly = Assembly.Load(ToProtobuf.AssemblyName);  //脚本所在程序集
 
         Type Tclass = assembly.GetType($"{fileName}");
         object TObj = Activator.CreateInstance(Tclass);

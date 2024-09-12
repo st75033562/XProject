@@ -1,22 +1,42 @@
-using Google.Protobuf;
-using Google.Protobuf.Collections;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
-using static Google.Protobuf.WellKnownTypes.Field;
 
 public class ToProtobuf : Editor {
     #region 配置
-    public const string AssemblyName = "Common";
-    private static string saveFilePath = Application.dataPath + "/S/";
+    public const string AssemblyName = "Assembly-CSharp";
     private const string SheetFilter = "@";
     private const string NewExcelTag = "N";
+
+    private static string SaveProtobufDataPath {  //excel转protobuf数据保存路径
+        get {
+            return Application.dataPath + "/Res/Data/";
+        }
+    }
+
+    private static string RootPath {  //工程跟路径 XProject
+        get {
+            var projectPath = Directory.GetParent(Application.dataPath).FullName;
+            return Directory.GetParent(projectPath).FullName; 
+        }
+    }
+    public static string ProtoCPath {  //protoc.exe 路径
+        get {
+            return RootPath + "/Tools/Proto/";
+        }
+    }
+
+    private static string Proto2ProtocRP{ //excel转proto文件相对proroc.exe相对路径
+        get {
+            return "Excels/";
+        }
+    }
+
+
     #endregion
 
     class SheetDatas {
@@ -35,7 +55,7 @@ public class ToProtobuf : Editor {
             for (int i = 0; i < sheetDatas.Count; i++) {
                 var sheetData = sheetDatas[i];
                 SaveProto(protoPath, sheetData.SheetName, sheetData.SheetRowDatas[1], sheetData.SheetRowDatas[2]); //保存proto协议文件
-                ExecuteProto(protoPath, sheetData.SheetName);  //根据proto打c#
+                ExecuteProto(sheetData.SheetName);  //根据proto打c#
             }
         }
         AssetDatabase.Refresh();
@@ -72,11 +92,9 @@ public class ToProtobuf : Editor {
     }
 
     private static (string, string) ExcelFolderPath() {
-        var projectPath = Directory.GetParent(Application.dataPath).FullName;
-        projectPath = Directory.GetParent(projectPath).FullName;
-
+        var projectPath = RootPath;
         var excelPath = projectPath + "/Tools/Excels";
-        var protoPath = projectPath + "/Tools/Proto";
+        var protoPath = ProtoCPath + Proto2ProtocRP;
         return (excelPath, protoPath);
     }
 
@@ -126,17 +144,17 @@ public class ToProtobuf : Editor {
         pro.SaveProto(savePath, fileName, names, types);
     }
 
-    private static void ExecuteProto(string protoPath, string fileName) {
+    private static void ExecuteProto(string fileName) {
         var savePath = Application.dataPath + "/Scripts/Config/Define/";
         List<string> cmds = new List<string>();
-        cmds.Add($"cd /d {protoPath}");
-        cmds.Add($"protoc {fileName} --csharp_out={savePath}");
+        cmds.Add($"cd /d {ProtoCPath}");
+        cmds.Add($"protoc {Proto2ProtocRP + fileName} --csharp_out={savePath}");
         new CMD(cmds);
     }
 
     private static void SaveDataFile(string fileName, List<string[]> datas) {
         var pro = GetToProtobuf(datas[2][0]);
-        pro.SaveDataFile(saveFilePath, fileName, datas);
+        pro.SaveDataFile(SaveProtobufDataPath, fileName, datas);
     }
 
     static BaseProtobuf GetToProtobuf(string str) {

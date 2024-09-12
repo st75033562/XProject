@@ -62,6 +62,8 @@
     <Compile Include="Assets\Scripts\Net\Protoc\IProtoc.cs" />
     <Compile Include="Assets\Scripts\Net\Protoc\ProtoBufProtoc.cs" />
     <Compile Include="Assets\Scripts\Net\Protoc\StringProtoc.cs" />
+    <Compile Include="Assets\Scripts\Config\Define\TRecharge.cs" />
+    <Compile Include="Assets\Scripts\Net\Protoc\Message\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

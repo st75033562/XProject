@@ -1,0 +1,23 @@
+syntax = "proto3";
+message TRechargeData
+{
+    int32  ID  =   1;
+    int32  GsType  =   2;
+    int32  PsType  =   3;
+    int32  RechargeLv  =   4;
+    string  CurrencyType  =   5;
+    int32  RechargeMoney  =   6;
+    int32  ShowPrice  =   7;
+    int32  RechargeDiamonds  =   8;
+    int32  FirstRechargeExtraDiamonds  =   9;
+    int32  Dianka  =   10;
+    int32  DailyRechargeExtraDiamondsAN  =   11;
+    int32  DailyRechargeExtraDiamondsIOS  =   12;
+    int32  IOSRechargeDailyRestriction  =   13;
+    int32  Realamount  =   14;
+    string  Descript  =   15;
+}
+message TRecharge
+{
+    repeated    TRechargeData  datas =   1;
+}
