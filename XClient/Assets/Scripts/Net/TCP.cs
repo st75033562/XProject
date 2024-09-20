@@ -1,15 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class TCP
 {
+    public enum NetState { 
+        None,
+        Connected,
+        ConnectFail,
+        Close
+    }
     private Socket socket;
-    private Action<bool> connectAct;
 
     private const int HeaderLength = 4;
     private const int NormalLength = 1048576; //1024 * 1024
@@ -21,14 +24,16 @@ public class TCP
     private byte[] headBuf = new byte[HeaderLength];
     private byte[] normalBuf = new byte[NormalLength];
     private Queue<byte[]> requests = new Queue<byte[]>();
-    private IProtoc protoc;
-    public void Init(IProtoc protoc) { 
+    private IProtoc<PCMD> protoc;
+
+    public TCP.NetState NetStateVar { get; private set; }
+
+    public TCP(IProtoc<PCMD> protoc) { 
         this.protoc = protoc;
     }
 
     #region Á¬½Ó
-    public void Connnet(string url, int port, Action<bool> act) {
-        connectAct = act;
+    public void Connnet(string url, int port) {
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPAddress servAD = null;
         try {
@@ -54,10 +59,10 @@ public class TCP
     private void ConnectCallback(IAsyncResult ar) {
         try {
             socket.EndConnect(ar); //or socket from [(Socket)ar.AsyncState]
-            connectAct?.Invoke(true);
+            NetStateVar = NetState.Connected;
             Receive(true, 0, HeaderLength, headBuf);
         } catch (Exception e) {
-            connectAct?.Invoke(false);
+            NetStateVar = NetState.ConnectFail;
             Debug.LogError("Connect Callback fail :" + e.ToString());
         }
     }
@@ -110,12 +115,13 @@ public class TCP
     }
 
     private void Receive(bool isHead, int offset, int size, byte[] buf) {
-        
+        Debug.Log($"{isHead} + {offset} + {size} + {buf.Length}");
         try {
             socket.BeginReceive(buf, offset, size, SocketFlags.None, asyncResult => {
                 int length;
                 try {
                     length = socket.EndReceive(asyncResult); //return real read length 
+                    Debug.Log("=====Receive==="+ length);
                 } catch (Exception ex) {
                     Debug.LogError("socket recive end fail£º" + ex.ToString());
                     Close();
@@ -163,6 +169,7 @@ public class TCP
         } catch (Exception ex) {
             Debug.LogError("socket Close fail" + ex.ToString());
         }
+        NetStateVar = NetState.Close;
         socket = null;
     }
 }

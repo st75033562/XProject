@@ -22,7 +22,7 @@ public class Net2Protobuf : Editor {
 
     private static string NetProtoMesPath {  //protobuf message 转成对应c#类路径
         get {
-            return Application.dataPath + "/Scripts/Net/Protoc/Message/";
+            return Application.dataPath + "/Scripts/Net/Message/";
         }
     }
     #endregion

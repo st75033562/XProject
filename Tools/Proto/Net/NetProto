@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+enum NetMsgType {
+  C2SLogin = 0;
+  S2CLogin = 1;
+}
+
+
+message PCMD
+{
+    NetMsgType  msgType  =   1;
+    bytes msg = 2;
+}
+
+message LoginC2S
+{
+    int32  ID  =   1;
+    string Name = 2;
+}
+
+message LoginS2C
+{
+    int32  error  =   1;
+}
+
