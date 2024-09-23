@@ -2,12 +2,16 @@
 using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
 using Google.Protobuf;
+using System.Buffers;
 using System.Net;
+using XServer.Services;
 
 namespace XServer.Net.ChannelHandler
 {
     public class EchoServerHandler : ChannelHandlerAdapter
     {
+        private static readonly ArrayPool<byte> arrayPool = ArrayPool<byte>.Create(maxArrayLength: 1024 * 1024 * 16, maxArraysPerBucket: 50);
+
 
         //public override void ChannelActive(IChannelHandlerContext context) {
         //    // 设置属性
@@ -17,19 +21,33 @@ namespace XServer.Net.ChannelHandler
 
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
-            var buffer = message as IByteBuffer;
-            if (buffer != null)
-            {
+            if (message is IByteBuffer buffer) {
+                int length = buffer.ReadableBytes;
+                byte[] data = arrayPool.Rent(length);
+                try {
+                    buffer.ReadBytes(data, 0, length);
 
+                    PCMD pCMD = PCMD.Parser.ParseFrom(data, 0, length);
+                    var (reponseType, resposeData) = ServiceMgr.Instance.DistractService(pCMD);
 
-                byte[] data = new byte[buffer.ReadableBytes];
-                buffer.ReadBytes(data);
+                    if (reponseType == ServiceMgr.ResponseType.Response) {
+                        int networkInt = IPAddress.HostToNetworkOrder(resposeData.Length); // 转换为网络字节序
+                        byte[] hostOrderArray = BitConverter.GetBytes(networkInt); // 转换为字节数组
 
-                PCMD pCMD = PCMD.Parser.ParseFrom(data);
-                LoginC2S login = LoginC2S.Parser.ParseFrom(pCMD.Msg);
-                Console.WriteLine("channel code: " + login.Name);
+                        byte[] finalDatas = hostOrderArray.Concat(resposeData).ToArray();
 
+                        context.WriteAndFlushAsync(Unpooled.CopiedBuffer(resposeData.ToArray()));
+
+                    } else if (reponseType == ServiceMgr.ResponseType.Error) {
+                        context.CloseAsync();
+                    }
+
+                } finally {
+                    arrayPool.Return(data, clearArray: true); // 可选：清除数组内容
+                }
             }
+
+
             //LoginS2C login1 = new LoginS2C();
             //login1.Error = 123;
             //PCMD pCMD1 = new PCMD();

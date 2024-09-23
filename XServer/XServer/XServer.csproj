@@ -20,7 +20,6 @@
   <ItemGroup>
     <Folder Include="Proto\" />
     <Folder Include="Entity\" />
-    <Folder Include="Start\" />
   </ItemGroup>
 
 </Project>

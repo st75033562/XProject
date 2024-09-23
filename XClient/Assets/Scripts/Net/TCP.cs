@@ -160,12 +160,9 @@ public class TCP
 
     public void Close() {
         try {
-            socket.Shutdown(SocketShutdown.Both);
-        } catch (Exception ex) {
-            Debug.LogError("socket Shutdown fail" + ex.ToString());
-        }
-        try {
-            socket.Close();
+            if (socket != null) {
+                socket.Close();
+            }
         } catch (Exception ex) {
             Debug.LogError("socket Close fail" + ex.ToString());
         }
