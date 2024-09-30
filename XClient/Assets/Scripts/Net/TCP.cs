@@ -115,13 +115,11 @@ public class TCP
     }
 
     private void Receive(bool isHead, int offset, int size, byte[] buf) {
-        Debug.Log($"{isHead} + {offset} + {size} + {buf.Length}");
         try {
             socket.BeginReceive(buf, offset, size, SocketFlags.None, asyncResult => {
                 int length;
                 try {
                     length = socket.EndReceive(asyncResult); //return real read length 
-                    Debug.Log("=====Receive==="+ length);
                 } catch (Exception ex) {
                     Debug.LogError("socket recive end fail£º" + ex.ToString());
                     Close();
