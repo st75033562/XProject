@@ -2,16 +2,20 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-    private NetMgr netMgr = NetMgr.Instance;
+    private TcpMgr netMgr = TcpMgr.Instance;
+    private WebSocketMgr wsSocket = WebSocketMgr.Instance;
     private NetMsgMgr netMsgMgr = NetMsgMgr.Instance;
     void Start()
     {
+        GameDefine.Instance.Init(this);
         netMgr.Start();
+        wsSocket.Start();
     }
 
     void Update()
     {
         netMgr.Update();
+        wsSocket.Update();
     }
 
     private void OnDestroy() {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using UnityEngine;
 
-public class NetMgr : Singleton<NetMgr>
+public class TcpMgr : Singleton<TcpMgr>
 {
     private IProtoc<PCMD> protoc;
     private TCP tcp;

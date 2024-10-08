@@ -1,9 +1,9 @@
-﻿using System.Buffers;
+﻿using XServer.Net;
 using System.Net;
-using XServer.Net;
 
-var server = new XTcpServer(IPAddress.Any, 6669);
-server.Start();
+new ServerMgr(ServerMgr.NetType.TCP,IPAddress.Any, 6668);
+
+
 //new NettyMgr();
 
 Console.WriteLine("启动完成！");

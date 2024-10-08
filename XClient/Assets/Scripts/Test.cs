@@ -9,19 +9,21 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NetMgr.Instance.NetStateEvent += Connect;
-        NetMgr.Instance.Connet("172.18.2.73" , 6669);
+        //  TcpMgr.Instance.NetStateEvent += Connect;
+        //   TcpMgr.Instance.Connet("172.18.2.73" , 6669);
 
+        WebSocketMgr.Instance.NetStateEvent += Connect;
+        WebSocketMgr.Instance.Connect("172.18.2.73", 6668);
        
     }
 
-    private void Connect(TCP.NetState state) {
-        if (state == TCP.NetState.Connected) {
+    private void Connect(WebSocket.NetState state) {
+        if (state == WebSocket.NetState.Connected) {
             LoginC2S login = new LoginC2S();
             login.ID = 1;
             login.Name = "Test";
 
-            NetMgr.Instance.Send(NetMsgType.C2Slogin, login.ToByteString());
+            WebSocketMgr.Instance.Send(NetMsgType.C2Slogin, login.ToByteString());
 
            // StartCoroutine(FF());
         }
@@ -36,7 +38,7 @@ public class Test : MonoBehaviour
             login.ID = 1;
             login.Name = "Test"+ index++;
 
-            NetMgr.Instance.Send(NetMsgType.C2Slogin, login.ToByteString());
+            TcpMgr.Instance.Send(NetMsgType.C2Slogin, login.ToByteString());
         }
     
     }
@@ -48,6 +50,6 @@ public class Test : MonoBehaviour
     }
 
     private void OnDestroy() {
-        NetMgr.Instance.Close();
+        TcpMgr.Instance.Close();
     }
 }

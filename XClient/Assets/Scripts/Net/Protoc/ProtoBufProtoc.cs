@@ -1,5 +1,6 @@
 using Google.Protobuf;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 public class ProtoBufProtoc<T> : IProtoc<T> where T:class {
 
@@ -9,7 +10,7 @@ public class ProtoBufProtoc<T> : IProtoc<T> where T:class {
 
         CodedInputStream inputStream = new CodedInputStream(data, start, length);
         PCMD pCMD = PCMD.Parser.ParseFrom(inputStream);
-
+        UnityEngine.Debug.Log("===>" + pCMD.MsgType);
         queuePcmd.Enqueue(pCMD);
     }
 
