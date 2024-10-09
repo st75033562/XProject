@@ -11,8 +11,10 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.28.0" />
+    <PackageReference Include="log4net" Version="3.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
     <PackageReference Include="NetCoreServer" Version="8.0.7" />
   </ItemGroup>
 
@@ -23,6 +25,9 @@
 
   <ItemGroup>
     <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
