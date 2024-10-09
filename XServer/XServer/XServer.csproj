@@ -11,12 +11,20 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.28.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="NetCoreServer" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Proto\" />
     <Folder Include="Entity\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

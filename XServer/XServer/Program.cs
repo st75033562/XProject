@@ -1,10 +1,13 @@
 ﻿using XServer.Net;
 using System.Net;
+using XServer.Utils;
 
-new ServerMgr(ServerMgr.NetType.TCP,IPAddress.Any, 6668);
+// 1、配置
+var config = Config.Instance;
+config.Init();
 
-
-//new NettyMgr();
+//启动服务
+new ServerMgr(ServerMgr.NetType.TCP, IPAddress.Any, config.GetInt("Port"));
 
 Console.WriteLine("启动完成！");
 
